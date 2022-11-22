@@ -17,7 +17,7 @@ public class CsvProcessor {
     }
 
     public void read() {
-        List<TeamData> read = null;
+        List<TeamData> read;
         try {
             read = reader.read();
         } catch (IOException e) {
@@ -34,11 +34,12 @@ public class CsvProcessor {
     }
 
     private List<Long> getTotalEffort(List<TeamData> teamData) {
+        final List<String> allTeams = getAllTeams(teamData);
         List<Long> integerList = new ArrayList<>();
-        for (int i = 0; i < getAllTeams(teamData).size(); i++) {
+        for (int i = 0; i < allTeams.size(); i++) {
             int finalI = i;
             long count = teamData.stream()
-                    .filter(teamData1 -> teamData1.getTeam().equals(getAllTeams(teamData).get(finalI)))
+                    .filter(teamData1 -> teamData1.getTeam().equals(allTeams.get(finalI)))
                     .map(TeamData::getStatus)
                     .filter(s -> s.equals(Status.OPEN.toString()) || s.equals(Status.IN_PROGRESS.toString()))
                     .count();
@@ -48,11 +49,12 @@ public class CsvProcessor {
     }
 
     private List<Long> getRemainingEffort(List<TeamData> teamData) {
+        final List<String> allTeams = getAllTeams(teamData);
         List<Long> integerList = new ArrayList<>();
-        for (int i = 0; i < getAllTeams(teamData).size(); i++) {
+        for (int i = 0; i < allTeams.size(); i++) {
             int finalI = i;
             long count = teamData.stream()
-                    .filter(teamData1 -> teamData1.getTeam().equals(getAllTeams(teamData).get(finalI)))
+                    .filter(teamData1 -> teamData1.getTeam().equals(allTeams.get(finalI)))
                     .map(TeamData::getStatus)
                     .filter(s -> s.equals(Status.CLOSED_COMPLETE.toString()) || s.equals(Status.CLOSED_REJECTED.toString()))
                     .count();
@@ -63,9 +65,9 @@ public class CsvProcessor {
 
     private void printResult(List<TeamData> read) {
         System.out.println("Team, Total Effort, Remaining Effort");
-        List<String> allTeams = getAllTeams(read);
-        List<Long> totalEffort = getTotalEffort(read);
-        List<Long> remainingEffort = getRemainingEffort(read);
+        final List<String> allTeams = getAllTeams(read);
+        final List<Long> totalEffort = getTotalEffort(read);
+        final List<Long> remainingEffort = getRemainingEffort(read);
 
         for (int i = 0; i < getAllTeams(read).size(); i++) {
             System.out.print(allTeams.get(i) + " ");
